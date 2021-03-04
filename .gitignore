@@ -1,72 +1,23 @@
-# OSX
-#
-.DS_Store
-package-lock.json
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Xcode
-#
-build/
-*.pbxuser
-!default.pbxuser
-*.mode1v3
-!default.mode1v3
-*.mode2v3
-!default.mode2v3
-*.perspectivev3
-!default.perspectivev3
-xcuserdata
-*.xccheckout
-*.moved-aside
-DerivedData
-*.hmap
-*.ipa
-*.xcuserstate
-project.xcworkspace
-TXLiteAVSDK_Enterprise.framework
-TXLiteAVSDK_Professional.framework
-libPaymentControl.a
-
-# Android/IntelliJ
-#
-third-party/
-build/
-.idea
-.gradle
-local.properties
-*.iml
-
-# node.js
-#
-ios/Pods/
-third-party/
-ios/Podfile.lock
-.update
-update.json
+# dependencies
 node_modules/
-npm-debug.log
-yarn-error.log
-package-lock.json
-# BUCK
-buck-out/
-\.buckd/
-*.lock
+/.pnp
+.pnp.js
 
-# fastlane
-#
-# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
-# screenshots whenever they are needed.
-# For more information about the recommended setup visit:
-# https://docs.fastlane.tools/best-practices/source-control/
+# testing
+/coverage
 
-*/fastlane/report.xml
-*/fastlane/Preview.html
-*/fastlane/screenshots
+# production
+/build
 
-# Bundle artifact
-*.jsbundle
-android/.settings/org.eclipse.buildship.core.prefs
-android/app/.settings/org.eclipse.buildship.core.prefs
-android/keeplive/.classpath
-android/keeplive/.project
-android/keeplive/.settings/org.eclipse.buildship.core.prefs
-js/component/social/IM_APIS.txt
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

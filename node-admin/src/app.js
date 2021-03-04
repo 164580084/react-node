@@ -8,12 +8,55 @@
 
 const express = require('express');
 const app = express();  //创建express的实例
-
 //导入 用户模块
 let userRouter = require('./models/user')
+const models = require('../models');//模型对象
 
-app.use(userRouter)
+/**
+ * 创建
+ */
+app.post('/register', async (req, res) => {
+    let {name,password} = req.query;
+    console.log(name, password);
+    // let user = await models.user.create({
+    //     name,
+    //     password
+    // })
+    // console.log(user);
+    // res.json({
+    //     message: '创建成功',
+    //     user
+    // })
+})
 
-app.listen(3000,()=>{
+/**
+ * 获取所有
+ */
+app.get('/list', async (req, res) => {
+    let user = await models.user.findAll()
+    console.log(user);
+    res.json({
+        user
+    })
+})
+
+
+/**
+ * 获取某个
+ */
+app.get('/detail/:id', async (req, res) => {
+    let {id}=req.params;
+    let user = await models.user.findOne({
+        where:{id}
+    })
+    console.log(user);
+    res.json({
+        user
+    })
+})
+
+
+
+app.listen(3001, () => {
     console.log('连接成功')
 })
