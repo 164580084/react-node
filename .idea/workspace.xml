@@ -2,10 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3efd365-a9c3-4765-901e-0e92b68e927d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/react-admin/src/index.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node-admin/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/node-admin/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/node-admin/config/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/node-admin/config/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/node-admin/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node-admin/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/node-admin/src/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/node-admin/src/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node-admin/src/models/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/node-admin/src/models/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node-admin/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/node-admin/yarn.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/react-admin" beforeDir="false" afterPath="$PROJECT_DIR$/react-admin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/react-admin/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/react-admin/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/react-admin/src/App.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/react-admin/src/App.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/react-admin/src/App.test.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/react-admin/src/index.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/react-admin/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/react-admin/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/react-admin/src/logo.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/react-admin/src/setupTests.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/react-admin/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/react-admin/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +60,7 @@
       <updated>1614740351374</updated>
       <workItem from="1614740352432" duration="3015000" />
       <workItem from="1614825055887" duration="513000" />
+      <workItem from="1615428299608" duration="5304000" />
     </task>
     <servers />
   </component>

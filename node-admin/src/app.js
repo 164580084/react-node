@@ -10,24 +10,40 @@ const express = require('express');
 const app = express();  //创建express的实例
 //导入 用户模块
 let userRouter = require('./models/user')
+let taskRouter = require('./models/tasks')
 const models = require('../models');//模型对象
+let bodyParser = require('body-parser');
+
+app.use(bodyParser.urlencoded({
+    extended: false
+}))
+app.use(bodyParser.json())
+
+// 解决跨域问题
+app.all("/*", function (req, res, next) {
+    // 跨域处理
+    res.header("Access-Control-Allow-Headers", "*")
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+    res.header("X-Powered-By", ' 3.2.1');
+    res.header("Content-Type", "application/json;charset=utf-8");
+    next(); // 执行下一个路由
+})
+
 
 /**
- * 创建
+ * 用户相关
  */
-app.post('/register', async (req, res) => {
-    let {name,password} = req.query;
-    console.log(name, password);
-    // let user = await models.user.create({
-    //     name,
-    //     password
-    // })
-    // console.log(user);
-    // res.json({
-    //     message: '创建成功',
-    //     user
-    // })
-})
+app.use('/user', userRouter)
+
+
+/**
+ * 操作任务
+ */
+app.use('/taskRouter', taskRouter)
+
+
+
 
 /**
  * 获取所有
@@ -45,16 +61,15 @@ app.get('/list', async (req, res) => {
  * 获取某个
  */
 app.get('/detail/:id', async (req, res) => {
-    let {id}=req.params;
+    let {id} = req.params;
     let user = await models.user.findOne({
-        where:{id}
+        where: {id}
     })
     console.log(user);
     res.json({
         user
     })
 })
-
 
 
 app.listen(3001, () => {
