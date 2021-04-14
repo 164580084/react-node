@@ -49,8 +49,8 @@ app.use('/taskRouter', taskRouter)
  * 获取所有
  */
 app.get('/list', async (req, res) => {
-    let user = await models.user.findAll()
-    console.log(user);
+    // let user = await models.user.findAll()
+    // console.log(user);
     res.json({
         user
     })
