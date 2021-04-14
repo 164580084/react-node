@@ -53,13 +53,13 @@ class HeaderBar extends React.Component {
       <Menu className='menu'>
         <Menu.ItemGroup title='用户中心' className='menu-group'>
           <Menu.Item>你好 - {isAuthenticated()}</Menu.Item>
-          <Menu.Item>个人信息</Menu.Item>
+          {/* <Menu.Item>个人信息</Menu.Item> */}
           <Menu.Item><span onClick={this.logout}>退出登录</span></Menu.Item>
         </Menu.ItemGroup>
-        <Menu.ItemGroup title='设置中心' className='menu-group'>
+        {/* <Menu.ItemGroup title='设置中心' className='menu-group'>
           <Menu.Item>个人设置</Menu.Item>
           <Menu.Item>系统设置</Menu.Item>
-        </Menu.ItemGroup>
+        </Menu.ItemGroup> */}
       </Menu>
     )
     const login = (
@@ -76,11 +76,11 @@ class HeaderBar extends React.Component {
         <div style={{lineHeight: '64px', float: 'right'}}>
           <ul className='header-ul'>
             <li><Icon type={icon} onClick={this.screenfullToggle}/></li>
-            <li onClick={() => this.setState({count: 0})}>
+            {/* <li onClick={() => this.setState({count: 0})}>
               <Badge count={appStore.isLogin ? count : 0} overflowCount={99} style={{marginRight: -17}}>
                 <Icon type="notification"/>
               </Badge>
-            </li>
+            </li> */}
             <li>
               {appStore.isLogin ? login : notLogin}
             </li>

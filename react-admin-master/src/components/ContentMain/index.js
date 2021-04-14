@@ -5,8 +5,11 @@ import PrivateRoute from '../PrivateRoute'
 
 const Home = LoadableComponent(()=>import('../../routes/Home/index'))  //参数一定要是函数，否则不会懒加载，只会代码拆分
 
+// 销售
 const List = LoadableComponent(()=>import('../../routes/List/index')) 
 
+// 开通账号
+const Account = LoadableComponent(()=>import('../../routes/Account/index')) 
 
 //基本组件Demo
 const ButtonDemo = LoadableComponent(()=>import('../../routes/General/ButtonDemo/index'))
@@ -56,7 +59,8 @@ class ContentMain extends React.Component {
 
           <PrivateRoute exact path='/list' component={List}/>
           
-
+          <PrivateRoute exact path='/account' component={Account}/>
+          
 
 
           

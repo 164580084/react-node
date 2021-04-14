@@ -22,7 +22,10 @@ module.exports = (sequelize, DataTypes) => {
     number: DataTypes.INTEGER,
     status: DataTypes.STRING,
     remarks: DataTypes.STRING,
-    total: DataTypes.FLOAT
+    paid: DataTypes.FLOAT,
+    unPaid: DataTypes.FLOAT,
+    total: DataTypes.FLOAT,
+    
   }, {
     sequelize,
     modelName: 'tasks',

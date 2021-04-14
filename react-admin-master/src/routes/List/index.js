@@ -3,6 +3,7 @@ import { Button, Table, Row, Col, DatePicker, Input, Select, Modal, Statistic, C
 import CustomBreadcrumb from '../../components/CustomBreadcrumb/index'
 import TypingCard from '../../components/TypingCard'
 import { withRouter } from 'react-router-dom'
+import { POWER } from '../../request/domainName'
 import { inject, observer } from 'mobx-react/index'
 import { addList, getList, removeList, editList, searchList } from '../../request/apiConfig/tasks'
 import moment from 'moment';
@@ -15,12 +16,14 @@ const options = [
     { label: '全部', value: '' },
     { label: '已付款', value: '1' },
     { label: '未付款', value: '2' },
+    { label: '未结清', value: '3' },
 ];
-const STATUS = ['', '已付款', '未付款']
+const STATUS = ['', '已付款', '未付款', '未结清']
 const OPERAType = ['新增', '修改', '查看']
 @withRouter @inject('appStore') @observer @Form.create()
 class List extends React.Component {
     state = {
+        power: '',//权限密码
         operationType: 0, //0 增加 1修改 2查看
         visible: false,
         searchData: {
@@ -37,7 +40,10 @@ class List extends React.Component {
             price: '',
             number: '',
             status: '',
-            remarks: ''
+            remarks: '',
+            paid: '',
+            unPaid: '',
+            total: ''
         },
         data: [],
         columns: [
@@ -108,31 +114,30 @@ class List extends React.Component {
     componentDidMount() {
         this.getListData()
     }
-    getListData = () => {
-        getList().then(res => {
+    getListData = (page) => {
+        let { data, searchData } = this.state;
+        let params = {
+            page: `${page ? page : 1}`,
+            ...searchData
+        }
+        // let path = `?path=${page ? page : 1}`
+        // current_page
+        getList(params).then(res => {
+            console.log(res,)
             if (res.code == 0) {
                 res.data.map((item, index) => {
                     item.date = moment(item.date).format('YYYY-MM-DD HH:mm:ss')
                     item.status = STATUS[item.status]
                 })
+                if (res.current_page != 1) {
+                    data.data = data.data.concat(res.data);
+                    data.current_page = res.current_page;
+                } else {
+                    data = res
+                }
+
                 this.setState({
-                    data: res.data
-                })
-            }
-        })
-    }
-    searchPost = () => {
-        let { searchData } = this.state;
-        let params = searchData
-        searchList({ params }).then(res => {
-            console.log(res, )
-            if (res.code == 0) {
-                res.data.map((item, index) => {
-                    item.date = moment(item.date).format('YYYY-MM-DD HH:mm:ss')
-                    item.status = STATUS[item.status]
-                })
-                this.setState({
-                    data: res.data
+                    data
                 })
             }
         })
@@ -147,7 +152,7 @@ class List extends React.Component {
         this.setState({
             searchData
         }, () => {
-            this.searchPost()
+            this.getListData()
         });
     };
     look = (e) => {
@@ -191,26 +196,45 @@ class List extends React.Component {
             visible: false,
         });
     };
+
+    jurisdiction = (e) => {
+        console.log(e.target.value)
+        this.setState({
+            power: e.target.value
+        })
+    }
+
     remove = (e) => {
         let that = this
+        // 
         confirm({
             title: '您确定要删除当前记录嘛?',
+            content: <Input placeholder="请输入权限密码" onChange={this.jurisdiction} />,
             onOk() {
-                let path = `/${e.id}`
-                removeList(path).then(res => {
-                    if (res.code == 0) {
-                        message.success(res.msg);
-                        that.getListData()
-                    } else {
-                        message.error(res.msg);
-                    }
-                })
-                console.log('OK');
+                let { power } = that.state;
+                if (power == POWER) {
+                    let path = `/${e.id}`
+                    removeList(path).then(res => {
+                        if (res.code == 0) {
+                            message.success(res.msg);
+                            that.getListData()
+                        } else {
+                            message.error(res.msg);
+                        }
+                    })
+                } else {
+                    message.error('删除权限密码错误');
+                }
+
             },
             onCancel() {
                 console.log('Cancel');
             },
         });
+    }
+
+    tableChange = (e) => {
+        this.getListData(e.current)
     }
 
     onChangeTime = (dates, dateStrings) => {
@@ -222,7 +246,7 @@ class List extends React.Component {
         this.setState({
             searchData
         }, () => {
-            this.searchPost()
+            this.getListData()
         });
     }
 
@@ -261,8 +285,30 @@ class List extends React.Component {
     render() {
         const { data, columns, formData, operationType, searchData } = this.state
         const { getFieldDecorator } = this.props.form
+        let initialStatus = '1'
+        // <Radio.Button value="1">已付款</Radio.Button>
+        // <Radio.Button value="2">未付款</Radio.Button>
+        // <Radio.Button value="3">未结清</Radio.Button>
+        console.log(formData, )
+        switch (formData.status) {
+            case '已付款':
+                initialStatus = '1';
+                break;
+            case '未付款':
+                initialStatus = '2';
+                break;
+            case '未结清':
+                initialStatus = '3';
+                break;
+            default:
+                initialStatus = null
+        }
+
         return (
             <div>
+                <div style={{ textAlign: 'center', padding: '12px 0 16px 0', fontSize: 24 }}>
+                    赊账
+                </div>
                 <Row style={{ backgroundColor: 'white' }}>
                     <div style={{ padding: 24 }}>
                         <Radio.Group
@@ -296,7 +342,7 @@ class List extends React.Component {
                                         this.setState({
                                             searchData
                                         }, () => {
-                                            this.searchPost()
+                                            this.getListData()
                                         })
                                     }}
                                     style={{ width: 300, height: 35, marginRight: 20 }}
@@ -315,15 +361,23 @@ class List extends React.Component {
 
 
                         <Row type="flex" gutter={16} align={'middle'} justify={'center'} style={{ marginTop: 15 }}>
-                            <Statistic title="已付款" value={112893} valueStyle={{ color: '#d81923' }} />&emsp;&emsp;&emsp;
-                        <Statistic title="赊账" value={112893} valueStyle={{ color: '#d81923' }} />
+                            <Statistic title="已付款" value={data.paidPrice} valueStyle={{ color: '#d81923' }} />&emsp;&emsp;&emsp;
+                        <Statistic title="未付款" value={data.onCreditPrice} valueStyle={{ color: '#d81923' }} />&emsp;&emsp;&emsp;
+                            <Statistic title="未结清" value={data.uncleared} valueStyle={{ color: '#d81923' }} />
                         </Row>
 
                     </div>
 
 
                     <Col span={24}>
-                        <Table columns={columns} dataSource={data} />
+                        <Table columns={columns} dataSource={data.data}
+                            pagination={{
+                                pageSize: data.pageSize,
+                                total: data.total
+                            }}
+                            onChange={this.tableChange}
+
+                        />
                     </Col>
                 </Row>
 
@@ -365,7 +419,7 @@ class List extends React.Component {
                                 <Form.Item label="船号">
                                     {getFieldDecorator('shipNumber', {
                                         initialValue: formData.shipNumber,
-                                        rules: [{ required: true, message: '请输入船号' }],
+                                        rules: [{ required: false, message: '请输入船号' }],
                                     })(<Input placeholder="请输入船号" />)}
                                 </Form.Item>
                             </Col>
@@ -374,7 +428,7 @@ class List extends React.Component {
                                     {getFieldDecorator('phone', {
                                         initialValue: formData.phone,
                                         rules: [{
-                                            required: true, message: '请输入正确的手机号', pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+                                            required: false, message: '请输入正确的手机号', pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
                                         }],
                                     })(<Input placeholder="请输入客户手机号" maxLength={11} />)}
                                 </Form.Item>
@@ -405,22 +459,70 @@ class List extends React.Component {
                             </Col>
                         </Row>
 
+
+                        <Row gutter={16}>
+                            <Col span={12}>
+                                <Form.Item label="收款">
+                                    {getFieldDecorator('total', {
+                                        initialValue: formData.total,
+                                        rules: [{
+                                            required: true, message: '请输入正确的收款', pattern: new RegExp(/^[0-9]+(.[0-9]{1,3})?$/, "g"),
+                                        }],
+                                    })(<Input placeholder="请输入应实收金额" />)}
+                                </Form.Item>
+                            </Col>
+                        </Row>
+
                         <Row gutter={16}>
                             <Col span={12}>
                                 <Form.Item label="付款状态">
 
                                     {getFieldDecorator('status', {
-                                        initialValue: formData.status == '已付款' ? '1' : '2',
+                                        initialValue: initialStatus,
                                         rules: [{
                                             required: true, message: '请选择付款状态',
                                         }],
-                                    })(<Radio.Group>
+                                    })(<Radio.Group onChange={(e) => {
+                                        formData.status = e.target.value
+                                        this.setState({
+                                            formData
+                                        })
+                                    }}>
                                         <Radio.Button value="1">已付款</Radio.Button>
                                         <Radio.Button value="2">未付款</Radio.Button>
+                                        <Radio.Button value="3">未结清</Radio.Button>
                                     </Radio.Group>)}
                                 </Form.Item>
                             </Col>
                         </Row>
+
+                        {
+                            formData.status == '3' || formData.status == '未结清' ?
+                                <Row gutter={16}>
+                                    <Col span={12}>
+                                        <Form.Item label="已付金额">
+                                            {getFieldDecorator('paid', {
+                                                initialValue: formData.paid,
+                                                rules: [{
+                                                    required: true, message: '请输入正确的已付金额', pattern: new RegExp(/^[0-9]+(.[0-9]{1,3})?$/, "g"),
+                                                }],
+                                            })(<Input placeholder="请输入已付金额" />)}
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={12}>
+                                        <Form.Item label="未付金额">
+                                            {getFieldDecorator('unPaid', {
+                                                initialValue: formData.unPaid,
+                                                rules: [{
+                                                    required: true, message: '请输入正确的未付金额', pattern: new RegExp(/^[0-9]+(.[0-9]{1,3})?$/, "g"),
+                                                }],
+                                            })(<Input placeholder="请输入未付金额" />)}
+                                        </Form.Item>
+                                    </Col>
+                                </Row> : null
+                        }
+
+
 
                         <Row gutter={16}>
                             <Col span={24}>

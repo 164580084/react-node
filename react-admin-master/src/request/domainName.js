@@ -14,3 +14,4 @@ const APPCONFIG = {
 };
 let apiObj = APPCONFIG[ENV]
 export const APIROOT = apiObj._api_root;
+export const POWER = '5368421'

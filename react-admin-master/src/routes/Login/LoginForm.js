@@ -2,8 +2,10 @@ import React from 'react'
 import { randomNum, calculateWidth } from '../../utils/utils'
 import { withRouter } from 'react-router-dom'
 import { inject, observer } from 'mobx-react/index'
-import { Form, Input, Row, Col } from 'antd'
+import { Form, Input, Row, Col, message } from 'antd'
 import PromptBox from '../../components/PromptBox'
+import { login } from '../../request/apiConfig/user'
+
 
 
 @withRouter @inject('appStore') @observer @Form.create()
@@ -13,7 +15,7 @@ class LoginForm extends React.Component {
     code: ''         //验证码
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.createCode()
   }
 
@@ -68,34 +70,47 @@ class LoginForm extends React.Component {
           return
         }
 
-        const users = this.props.appStore.users
-        // 检测用户名是否存在
-        const result = users.find(item => item.username === values.username)
-        if (!result) {
-          this.props.form.setFields({
-            username: {
-              value: values.username,
-              errors: [new Error('用户名不存在')]
-            }
-          })
-          return
-        } else {
-          //检测密码是否错误
-          if (result.password !== values.password) {
-            this.props.form.setFields({
-              password: {
-                value: values.password,
-                errors: [new Error('密码错误')]
-              }
-            })
+        // const users = this.props.appStore.users
+        // // 检测用户名是否存在
+        // const result = users.find(item => item.username === values.username)
+        // if (!result) {
+        //   this.props.form.setFields({
+        //     username: {
+        //       value: values.username,
+        //       errors: [new Error('用户名不存在')]
+        //     }
+        //   })
+        //   return
+        // } else {
+        //   //检测密码是否错误
+        //   if (result.password !== values.password) {
+        //     this.props.form.setFields({
+        //       password: {
+        //         value: values.password,
+        //         errors: [new Error('密码错误')]
+        //       }
+        //     })
+        //     return
+        //   }
+        // }
+
+        let params = {
+          name: values.username,
+          password: values.password
+        }
+        login(params).then(res => {
+          if (res.code == 0) {
+            message.success(res.msg);
+            this.props.appStore.toggleLogin(true, { username: values.username })
+            const { from } = this.props.location.state || { from: { pathname: '/' } }
+            this.props.history.push(from)
             return
           }
-        }
+          message.error(res.msg);
+        })
 
-        this.props.appStore.toggleLogin(true, {username: values.username})
 
-        const {from} = this.props.location.state || {from: {pathname: '/'}}
-        this.props.history.push(from)
+
       }
     })
   }
@@ -104,46 +119,46 @@ class LoginForm extends React.Component {
     setTimeout(() => this.props.form.resetFields(), 500)
   }
 
-  render () {
-    const {getFieldDecorator, getFieldError} = this.props.form
-    const {focusItem, code} = this.state
+  render() {
+    const { getFieldDecorator, getFieldError } = this.props.form
+    const { focusItem, code } = this.state
     return (
       <div className={this.props.className}>
         <h3 className='title'>管理员登录</h3>
         <Form onSubmit={this.loginSubmit}>
           <Form.Item help={getFieldError('username') &&
-          <PromptBox info={getFieldError('username')} width={calculateWidth(getFieldError('username'))}/>}>
+            <PromptBox info={getFieldError('username')} width={calculateWidth(getFieldError('username'))} />}>
             {getFieldDecorator('username', {
-              rules: [{required: true, message: '请输入用户名'}]
+              rules: [{ required: true, message: '请输入用户名' }]
             })(
               <Input
-                onFocus={() => this.setState({focusItem: 0})}
-                onBlur={() => this.setState({focusItem: -1})}
+                onFocus={() => this.setState({ focusItem: 0 })}
+                onBlur={() => this.setState({ focusItem: -1 })}
                 maxLength={16}
                 placeholder='用户名'
-                addonBefore={<span className='iconfont icon-User' style={focusItem === 0 ? styles.focus : {}}/>}/>
+                addonBefore={<span className='iconfont icon-User' style={focusItem === 0 ? styles.focus : {}} />} />
             )}
           </Form.Item>
           <Form.Item help={getFieldError('password') &&
-          <PromptBox info={getFieldError('password')} width={calculateWidth(getFieldError('password'))}/>}>
+            <PromptBox info={getFieldError('password')} width={calculateWidth(getFieldError('password'))} />}>
             {getFieldDecorator('password', {
-              rules: [{required: true, message: '请输入密码'}]
+              rules: [{ required: true, message: '请输入密码' }]
             })(
               <Input
-                onFocus={() => this.setState({focusItem: 1})}
-                onBlur={() => this.setState({focusItem: -1})}
+                onFocus={() => this.setState({ focusItem: 1 })}
+                onBlur={() => this.setState({ focusItem: -1 })}
                 type='password'
                 maxLength={16}
                 placeholder='密码'
-                addonBefore={<span className='iconfont icon-suo1' style={focusItem === 1 ? styles.focus : {}}/>}/>
+                addonBefore={<span className='iconfont icon-suo1' style={focusItem === 1 ? styles.focus : {}} />} />
             )}
           </Form.Item>
           <Form.Item help={getFieldError('verification') &&
-          <PromptBox info={getFieldError('verification')} width={calculateWidth(getFieldError('verification'))}/>}>
+            <PromptBox info={getFieldError('verification')} width={calculateWidth(getFieldError('verification'))} />}>
             {getFieldDecorator('verification', {
               validateFirst: true,
               rules: [
-                {required: true, message: '请输入验证码'},
+                { required: true, message: '请输入验证码' },
                 {
                   validator: (rule, value, callback) => {
                     if (value.length >= 4 && code.toUpperCase() !== value.toUpperCase()) {
@@ -157,22 +172,22 @@ class LoginForm extends React.Component {
               <Row>
                 <Col span={15}>
                   <Input
-                    onFocus={() => this.setState({focusItem: 2})}
-                    onBlur={() => this.setState({focusItem: -1})}
+                    onFocus={() => this.setState({ focusItem: 2 })}
+                    onBlur={() => this.setState({ focusItem: -1 })}
                     maxLength={4}
                     placeholder='验证码'
                     addonBefore={<span className='iconfont icon-securityCode-b'
-                                       style={focusItem === 2 ? styles.focus : {}}/>}/>
+                      style={focusItem === 2 ? styles.focus : {}} />} />
                 </Col>
                 <Col span={9}>
-                  <canvas onClick={this.createCode} width="80" height='39' ref={el => this.canvas = el}/>
+                  <canvas onClick={this.createCode} width="80" height='39' ref={el => this.canvas = el} />
                 </Col>
               </Row>
             )}
           </Form.Item>
           <div className='bottom'>
-            <input className='loginBtn' type="submit" value='登录'/>
-            <span className='registerBtn' onClick={this.register}>注册</span>
+            <input className='loginBtn' type="submit" value='登录' />
+            {/* <span className='registerBtn' onClick={this.register}>注册</span> */}
           </div>
         </Form>
         <div className='footer'>

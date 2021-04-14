@@ -19,12 +19,13 @@ let Jwt = require('../jwt/jwt')
 router.post('/register', async (req, res) => {
     let {name, password} = req.body
     //
+    console.log(name, password)
     let user = await models.user.findOne({
         where: {name}
     })
     if (!user) {
-        let jwt = new Jwt(name)
-        let token = jwt.generateToken()
+        // let jwt = new Jwt(name)
+        // let token = jwt.generateToken()
         let user = await models.user.create({
             name,
             password,
@@ -35,7 +36,7 @@ router.post('/register', async (req, res) => {
                 id: user.id,
                 name: user.name
             },
-            token,
+            // token,
             msg: '注册成功'
         })
         return
@@ -56,7 +57,7 @@ router.post('/login', async (req, res) => {
     if(!user){
         res.json({
             code: -1,
-            msg: '叼毛~~请先注册好嘛～'
+            msg: '叼毛~~请让管理员帮您开通账号～'
         })
         return
     }
@@ -64,21 +65,21 @@ router.post('/login', async (req, res) => {
      * 身份验证
      */
     if(user.password == password){
-        let jwt = new Jwt(name)
-        let token = jwt.generateToken()
+        // let jwt = new Jwt(name)
+        // let token = jwt.generateToken()
         res.json({
             code: 0,
             data: {
                 id: user.id,
                 name: user.name
             },
-            token,
+            // token,
             msg: '登陆成功'
         })
     }else{
         res.json({
             code: -1,
-            msg: '叼毛~~认真点输入你的密码'
+            msg: '叼毛~~请检查账号密码是否正确'
         })
     }
 

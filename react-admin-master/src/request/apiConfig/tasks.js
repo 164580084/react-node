@@ -11,8 +11,8 @@ export async function addList({ params, path }) {
 /**
  * 获取列表
  */
-export async function getList() {
-  return request('/taskRouter/list', {}, 'get');
+export async function getList(params) {
+  return request('/taskRouter/list', params, 'get');
 }
 
 /**
@@ -32,6 +32,6 @@ export async function removeList(path) {
 /**
  * 搜索
  */
- export async function searchList({params}) {
-  return request('/taskRouter/search', params, 'post', );
+export async function searchList({ params }) {
+  return request('/taskRouter/search', params, 'post',);
 }
