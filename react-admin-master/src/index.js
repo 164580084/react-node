@@ -16,7 +16,9 @@ ReactDOM.render(
   <HashRouter>
     <ConfigProvider locale={zh_CN}>
       <Provider {...store}>
-        <App />
+        <App ref={navigatorRef => {
+          console.log(navigatorRef)
+        }} />
       </Provider>
     </ConfigProvider>
   </HashRouter>,

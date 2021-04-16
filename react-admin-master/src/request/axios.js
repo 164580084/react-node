@@ -8,6 +8,7 @@
 import axios from 'axios';
 import { message, Button } from 'antd';
 import { APIROOT } from './domainName';
+
 //  import AsyncStorage from '../util/asyncStorage';
 const instance = axios.create({
     baseURL: APIROOT,
@@ -23,22 +24,12 @@ const instance = axios.create({
 // 添加一个请求拦截器
 instance.interceptors.request.use(
     async function (config) {
-        //网络请求
-        // return config;
-        // NetInfoStateType
-        // NetInfo.fetch().then(state => {
-        //   console.log(state);
-        //   if (state.type == 'none') {
-        //     console.log('跳转到没网页面');
-        //     return;
-        //   }
-        // });
         // 在发送请求之前做些什么
-        //  let token_type = await AsyncStorage.get('token_type');
-        //  token_type != null
-        //    ? (config.headers.Authorization =
-        //        token_type.token_type + ' ' + token_type.access_token)
-        //    : 'Bearer ';
+        let token_type = localStorage.getItem('token_type');
+        token_type != null
+            ? (config.headers.Authorization =
+                token_type)
+            : 'Bearer ';
         return config;
     },
     function (error) {
@@ -47,27 +38,6 @@ instance.interceptors.request.use(
         return Promise.reject(error);
     },
 );
-
-// 添加一个响应拦截器
-instance.interceptors.response.use(
-    function (response) {
-        console.log(response);
-        return response;
-    },
-    function (err) {
-        console.log(err);
-        const { message, code, response } = err;
-        console.log(response);
-        //请求超时
-        if (code === 'ECONNABORTED' || message === 'Network Error') {
-            message.warning('请求超时后重试');
-        } else {
-            console.log(err);
-            dealError(err.response.status);
-        }
-    },
-);
-
 /**
  * 错误处理
  * @param status 状态码
@@ -75,7 +45,9 @@ instance.interceptors.response.use(
 function dealError(status) {
     switch (status) {
         case 401:
-            message.error('401');
+            message.error('请先登录');
+            // this.props.appStore.toggleLogin(false)
+            window.history.href('/login')
             break;
         case 500:
             message.error('服务器忙');
@@ -124,7 +96,12 @@ export const request = async (api, params = {}, methods = 'get', path = '') => {
         instance[methods](api, params)
             .then(res => {
                 if (res && res.status == 200) {
-                    resolve(res.data);
+                    if (res.data.code == 401) {
+                        dealError(res.data.code)
+                    } else {
+                        resolve(res.data);
+                    }
+
                 }
             })
             .catch(err => {

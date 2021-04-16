@@ -100,10 +100,14 @@ class LoginForm extends React.Component {
         }
         login(params).then(res => {
           if (res.code == 0) {
+            localStorage.setItem('token_type', res.token)
             message.success(res.msg);
-            this.props.appStore.toggleLogin(true, { username: values.username })
-            const { from } = this.props.location.state || { from: { pathname: '/' } }
-            this.props.history.push(from)
+            setTimeout(() => {
+              this.props.appStore.toggleLogin(true, { username: values.username })
+              const { from } = this.props.location.state || { from: { pathname: '/' } }
+              this.props.history.push(from)
+            }, 500)
+
             return
           }
           message.error(res.msg);

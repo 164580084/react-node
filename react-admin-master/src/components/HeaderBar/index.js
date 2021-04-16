@@ -15,7 +15,7 @@ class HeaderBar extends React.Component {
     avatar: require('./img/04.jpg')
   }
 
-  componentDidMount () {
+  componentDidMount() {
     screenfull.onchange(() => {
       this.setState({
         icon: screenfull.isFullscreen ? 'shrink' : 'arrows-alt'
@@ -23,7 +23,7 @@ class HeaderBar extends React.Component {
     })
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     screenfull.off('change')
   }
 
@@ -36,17 +36,18 @@ class HeaderBar extends React.Component {
     }
   }
   logout = () => {
+    console.log(this.props.location.pathname)
     this.props.appStore.toggleLogin(false)
     this.props.history.push(this.props.location.pathname)
   }
 
-  render () {
-    const {icon, count, visible, avatar} = this.state
-    const {appStore, collapsed, location} = this.props
+  render() {
+    const { icon, count, visible, avatar } = this.state
+    const { appStore, collapsed, location } = this.props
     const notLogin = (
       <div>
-        <Link to={{pathname: '/login', state: {from: location}}} style={{color: 'rgba(0, 0, 0, 0.65)'}}>登录</Link>&nbsp;
-        <img src={require('../../assets/img/defaultUser.jpg')} alt=""/>
+        <Link to={{ pathname: '/login', state: { from: location } }} style={{ color: 'rgba(0, 0, 0, 0.65)' }}>登录</Link>&nbsp;
+        <img src={require('../../assets/img/defaultUser.jpg')} alt="" />
       </div>
     )
     const menu = (
@@ -64,7 +65,7 @@ class HeaderBar extends React.Component {
     )
     const login = (
       <Dropdown overlay={menu}>
-        <img onClick={() => this.setState({visible: true})} src={avatar} alt=""/>
+        <img onClick={() => this.setState({ visible: true })} src={avatar} alt="" />
       </Dropdown>
     )
     return (
@@ -72,10 +73,10 @@ class HeaderBar extends React.Component {
         <Icon
           type={collapsed ? 'menu-unfold' : 'menu-fold'}
           className='trigger'
-          onClick={this.toggle}/>
-        <div style={{lineHeight: '64px', float: 'right'}}>
+          onClick={this.toggle} />
+        <div style={{ lineHeight: '64px', float: 'right' }}>
           <ul className='header-ul'>
-            <li><Icon type={icon} onClick={this.screenfullToggle}/></li>
+            <li><Icon type={icon} onClick={this.screenfullToggle} /></li>
             {/* <li onClick={() => this.setState({count: 0})}>
               <Badge count={appStore.isLogin ? count : 0} overflowCount={99} style={{marginRight: -17}}>
                 <Icon type="notification"/>
@@ -90,8 +91,8 @@ class HeaderBar extends React.Component {
           footer={null} closable={false}
           visible={visible}
           wrapClassName="vertical-center-modal"
-          onCancel={() => this.setState({visible: false})}>
-          <img src={avatar} alt="" width='100%'/>
+          onCancel={() => this.setState({ visible: false })}>
+          <img src={avatar} alt="" width='100%' />
         </Modal>
       </div>
     )

@@ -284,12 +284,12 @@ class List extends React.Component {
 
     render() {
         const { data, columns, formData, operationType, searchData } = this.state
-        const { getFieldDecorator } = this.props.form
+        const { getFieldDecorator, getFieldValue } = this.props.form
         let initialStatus = '1'
         // <Radio.Button value="1">已付款</Radio.Button>
         // <Radio.Button value="2">未付款</Radio.Button>
         // <Radio.Button value="3">未结清</Radio.Button>
-        console.log(formData, )
+        console.log(formData,)
         switch (formData.status) {
             case '已付款':
                 initialStatus = '1';
@@ -361,6 +361,8 @@ class List extends React.Component {
 
 
                         <Row type="flex" gutter={16} align={'middle'} justify={'center'} style={{ marginTop: 15 }}>
+                            <Statistic title="总销量" value={data.sales} valueStyle={{ color: '#d81923' }} />&emsp;&emsp;&emsp;
+
                             <Statistic title="已付款" value={data.paidPrice} valueStyle={{ color: '#d81923' }} />&emsp;&emsp;&emsp;
                         <Statistic title="未付款" value={data.onCreditPrice} valueStyle={{ color: '#d81923' }} />&emsp;&emsp;&emsp;
                             <Statistic title="未结清" value={data.uncleared} valueStyle={{ color: '#d81923' }} />
@@ -458,15 +460,21 @@ class List extends React.Component {
                                 </Form.Item>
                             </Col>
                         </Row>
-
+                        <Row gutter={16}>
+                            <Col span={12}>
+                                <Form.Item label="小计">
+                                    <Input placeholder="小计" value={(getFieldValue('price') * getFieldValue('number')).toFixed(2)} />
+                                </Form.Item>
+                            </Col>
+                        </Row>
 
                         <Row gutter={16}>
                             <Col span={12}>
-                                <Form.Item label="收款">
+                                <Form.Item label="实收">
                                     {getFieldDecorator('total', {
                                         initialValue: formData.total,
                                         rules: [{
-                                            required: true, message: '请输入正确的收款', pattern: new RegExp(/^[0-9]+(.[0-9]{1,3})?$/, "g"),
+                                            required: true, message: '请输入正确的实收', pattern: new RegExp(/^[0-9]+(.[0-9]{1,3})?$/, "g"),
                                         }],
                                     })(<Input placeholder="请输入应实收金额" />)}
                                 </Form.Item>

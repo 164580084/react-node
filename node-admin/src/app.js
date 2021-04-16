@@ -12,6 +12,7 @@ const app = express();  //创建express的实例
 let userRouter = require('./models/user')
 let taskRouter = require('./models/tasks')
 const models = require('../models');//模型对象
+let Jwt = require('./jwt/jwt')
 let bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({
@@ -29,7 +30,29 @@ app.all("/*", function (req, res, next) {
     res.header("Content-Type", "application/json;charset=utf-8");
     next(); // 执行下一个路由
 })
-
+app.use(function (req, res, next) {
+    console.log(req.url)
+    // 我这里知识把登陆和注册请求去掉了，其他的多有请求都需要进行token校验 
+    if (req.url != '/user/login' && req.url != '/user/register') {
+        if (req.headers) {
+            let token = req.headers.authorization;
+            let jwt = new Jwt(token);
+            let result = jwt.verifyToken();
+            // 如果考验通过就next，否则就返回登陆信息不正确
+            if (result == 'err') {
+                console.log(result);
+                res.send({ code: 401, msg: '请先登录' });
+                // res.render('login.html');
+            } else {
+                next();
+            }
+        } else {
+            res.send({ code: 401, msg: '请先登录' });
+        }
+    } else {
+        next();
+    }
+});
 
 /**
  * 用户相关
@@ -61,9 +84,9 @@ app.get('/list', async (req, res) => {
  * 获取某个
  */
 app.get('/detail/:id', async (req, res) => {
-    let {id} = req.params;
+    let { id } = req.params;
     let user = await models.user.findOne({
-        where: {id}
+        where: { id }
     })
     console.log(user);
     res.json({

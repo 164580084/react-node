@@ -75,10 +75,12 @@ router.get(`/list`, async (req, res) => {
      * 2 未付款
      * 3 未结清
      */
-    let paidPrice = 0;
-    let onCreditPrice = 0;
-    let uncleared = 0;
+    let paidPrice = 0; //已付款
+    let onCreditPrice = 0; //未付款
+    let uncleared = 0; //未结清
+    let sales = 0; //总销量
     rows.map((item, index) => {
+        sales += item.number
         if (item.status == 1) {
             paidPrice += item.total
         } else if (item.status == 2) {
@@ -95,6 +97,7 @@ router.get(`/list`, async (req, res) => {
             paidPrice,
             onCreditPrice,
             uncleared,
+            sales,
             current_page: Number(page),
             next_page: Math.ceil(count / pageSize),
             total: count,
