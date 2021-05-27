@@ -47,7 +47,8 @@ function dealError(status) {
         case 401:
             message.error('请先登录');
             // this.props.appStore.toggleLogin(false)
-            window.history.href('/login')
+            // window.history.href('/login')
+            // windows.href = '/login'
             break;
         case 500:
             message.error('服务器忙');

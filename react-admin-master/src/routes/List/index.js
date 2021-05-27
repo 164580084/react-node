@@ -19,7 +19,13 @@ const options = [
     { label: '未结清', value: '3' },
 ];
 const STATUS = ['', '已付款', '未付款', '未结清']
-const OPERAType = ['新增', '修改', '查看']
+const OPERATYPE = ['新增', '修改', '查看']
+const TYPEDOM = {
+    '总销量': { name: '总销量', param: 'sales' },
+    '已付款': { name: '已付款', param: 'paidPrice' },
+    '未付款': { name: '未付款', param: 'onCreditPrice' },
+    '未结清': { name: '未结清', param: 'uncleared' },
+}
 @withRouter @inject('appStore') @observer @Form.create()
 class List extends React.Component {
     state = {
@@ -237,6 +243,29 @@ class List extends React.Component {
         this.getListData(e.current)
     }
 
+    statusDom = () => {
+        let arr = [TYPEDOM['总销量']]
+        const { searchData, data } = this.state
+        console.log(searchData.type, '1023912379103')
+        switch (searchData.type) {
+            case '1':
+                arr.push(TYPEDOM['已付款'])
+                break;
+            case '2':
+                arr.push(TYPEDOM['未付款'])
+                break;
+            case '3':
+                arr.push(TYPEDOM['已付款'], TYPEDOM['未结清'])
+                break;
+            default:
+                arr.push(TYPEDOM['已付款'], TYPEDOM['未付款'], TYPEDOM['未结清'])
+                break;
+        }
+
+        return arr.map((item) => <Statistic title={item.name} value={data[item.param]} valueStyle={{ color: '#d81923', marginRight: 40 }} />)
+
+    }
+
     onChangeTime = (dates, dateStrings) => {
         console.log('From: ', dates[0], ', to: ', dates[1]);
         console.log('From: ', dateStrings[0], ', to: ', dateStrings[1]);
@@ -307,7 +336,7 @@ class List extends React.Component {
         return (
             <div>
                 <div style={{ textAlign: 'center', padding: '12px 0 16px 0', fontSize: 24 }}>
-                    赊账
+                    {options[searchData.type ? searchData.type : 0].label}
                 </div>
                 <Row style={{ backgroundColor: 'white' }}>
                     <div style={{ padding: 24 }}>
@@ -327,13 +356,6 @@ class List extends React.Component {
                         />
                         <Row type="flex" justify="space-between" style={{ marginTop: 30 }}>
                             <div>
-                                {/* {
-                                        console.log(value, )
-                                        // searchData.value = value
-                                        // this.setState({
-                                        //     searchData
-                                        // })
-                                    } */}
                                 <Search
                                     placeholder="请输入姓名查询"
                                     onSearch={(value) => {
@@ -361,11 +383,9 @@ class List extends React.Component {
 
 
                         <Row type="flex" gutter={16} align={'middle'} justify={'center'} style={{ marginTop: 15 }}>
-                            <Statistic title="总销量" value={data.sales} valueStyle={{ color: '#d81923' }} />&emsp;&emsp;&emsp;
-
-                            <Statistic title="已付款" value={data.paidPrice} valueStyle={{ color: '#d81923' }} />&emsp;&emsp;&emsp;
-                        <Statistic title="未付款" value={data.onCreditPrice} valueStyle={{ color: '#d81923' }} />&emsp;&emsp;&emsp;
-                            <Statistic title="未结清" value={data.uncleared} valueStyle={{ color: '#d81923' }} />
+                            {
+                                this.statusDom()
+                            }
                         </Row>
 
                     </div>
@@ -386,7 +406,7 @@ class List extends React.Component {
 
                 {/* 抽屉栏 */}
                 <Drawer
-                    title={OPERAType[operationType]}
+                    title={OPERATYPE[operationType]}
                     width={720}
                     onClose={this.onClose}
                     visible={this.state.visible}

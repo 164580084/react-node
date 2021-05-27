@@ -32,8 +32,10 @@ app.all("/*", function (req, res, next) {
 })
 app.use(function (req, res, next) {
     console.log(req.url)
+
+    console.log(req)
     // 我这里知识把登陆和注册请求去掉了，其他的多有请求都需要进行token校验 
-    if (req.url != '/user/login' && req.url != '/user/register') {
+    if (req.url != '/api/user/login' && req.url != '/api/user/register') {
         if (req.headers) {
             let token = req.headers.authorization;
             let jwt = new Jwt(token);
@@ -57,13 +59,13 @@ app.use(function (req, res, next) {
 /**
  * 用户相关
  */
-app.use('/user', userRouter)
+app.use('/api/user', userRouter)
 
 
 /**
  * 操作任务
  */
-app.use('/taskRouter', taskRouter)
+app.use('/api/taskRouter', taskRouter)
 
 
 

@@ -86,7 +86,8 @@ router.get(`/list`, async (req, res) => {
         } else if (item.status == 2) {
             onCreditPrice += item.total
         } else {
-            uncleared += (item.total - item.unPaid)
+            paidPrice += item.paid
+            uncleared += (item.total - item.paid)
         }
     })
 
