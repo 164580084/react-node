@@ -16,8 +16,8 @@
   },
   "production": {
     "username": "root",
-    "password": null,
-    "database": "haiyu",
+    "password": "n5tK7XT3wEcAhDhs",
+    "database": "haiyu_cn",
     "host": "127.0.0.1",
     "dialect": "mysql"
   }

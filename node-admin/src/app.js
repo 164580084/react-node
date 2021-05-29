@@ -32,10 +32,9 @@ app.all("/*", function (req, res, next) {
 })
 app.use(function (req, res, next) {
     console.log(req.url)
-
-    console.log(req)
     // 我这里知识把登陆和注册请求去掉了，其他的多有请求都需要进行token校验 
-    if (req.url != '/api/user/login' && req.url != '/api/user/register') {
+    if (req.url!= '/api/user/login' && req.url != '/api/user/register') {
+        console.log('进来了')
         if (req.headers) {
             let token = req.headers.authorization;
             let jwt = new Jwt(token);
